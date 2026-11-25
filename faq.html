@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" data-page="faq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAQ · TickGate · Robinhood Chain market data, paid per call</title>
+<meta name="description" content="Robinhood Chain market data, answered: HTTP 402, paying per call on chain 4663, agents and budgets, the data, the $TGATE token and launch status.">
+<link rel="canonical" href="https://tickgate.live/faq.html">
+<meta name="theme-color" content="#f3f0ec">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TickGate">
+<meta property="og:url" content="https://tickgate.live/faq.html">
+<meta property="og:title" content="FAQ · TickGate · Robinhood Chain market data, paid per call">
+<meta property="og:description" content="Robinhood Chain market data, answered: HTTP 402, paying per call on chain 4663, agents and budgets, the data, the $TGATE token and launch status.">
+<meta property="og:image" content="https://tickgate.live/brand/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TickGate: Insert coin. Get data.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ticketgaterh">
+<meta name="twitter:title" content="FAQ · TickGate · Robinhood Chain market data, paid per call">
+<meta name="twitter:description" content="Robinhood Chain market data, answered: HTTP 402, paying per call on chain 4663, agents and budgets, the data, the $TGATE token and launch status.">
+<meta name="twitter:image" content="https://tickgate.live/brand/og-image.png">
+<link rel="icon" href="brand/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.23/dist/lenis.mjs"
+  }
+}
+</script>
+<link rel="modulepreload" href="assets/core.js">
+<script>/* early flags: page-transition entry + once-per-session home intro (CSS reveals everything after 2.6s if scripts never run) */
+(function(){var d=document.documentElement,rm=matchMedia('(prefers-reduced-motion: reduce)').matches,ss;try{ss=sessionStorage}catch(e){}
+d.classList.add('js');if(rm)return;
+try{if(ss&&ss.getItem('tg-wipe')){ss.removeItem('tg-wipe');d.classList.add('tg-enter')}}catch(e){}
+try{if(d.dataset.page==='home'&&ss&&!ss.getItem('tg-intro')&&!location.hash){d.classList.add('intro')}}catch(e){}})();</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+</head>
+<body class="page-faq">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- SVG sprite: brand icon (gate mark) + marble filters (not display:none so filters resolve) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="tgG" gradientUnits="userSpaceOnUse" cx="164" cy="143" r="400">
+      <stop offset="0" stop-color="#f8c9c4"/><stop offset=".18" stop-color="#f2a19c"/>
+      <stop offset=".45" stop-color="#e86a66"/><stop offset=".75" stop-color="#c43a3a"/>
+      <stop offset="1" stop-color="#8f1d22"/>
+    </radialGradient>
+    <filter id="tgM" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 0 .25 1 .2 0 0 .45 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .85 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="SourceAlpha" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <clipPath id="tgC"><circle cx="256" cy="256" r="240"/></clipPath>
+    <radialGradient id="tgH" cx="30%" cy="26%" r="34%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <!-- page marble: sheen on buttons/cards -->
+    <filter id="mf" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="34" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 .3 1 .2 0 .5 0 0 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .7 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="w" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <!-- divider marble: gentle warp on hairlines -->
+    <filter id="mfd" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  1.4 0 0 0 -.55" result="tint"/>
+      <feComposite in="tint" in2="w" operator="in" result="ti"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="ti"/></feMerge>
+    </filter>
+    <linearGradient id="fbRib" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#c43a3a"/><stop offset=".35" stop-color="#e86a66"/><stop offset=".55" stop-color="#f2a19c"/><stop offset=".8" stop-color="#e86a66"/><stop offset="1" stop-color="#b3242b"/>
+    </linearGradient>
+  </defs>
+  <symbol id="tg-gate" viewBox="0 0 512 512">
+    <rect x="186" y="256" width="40" height="80" rx="12" fill="#f3f0ec"/>
+    <rect x="172" y="322" width="68" height="22" rx="11" fill="#f3f0ec"/>
+    <g transform="rotate(-35 206 258)">
+      <rect x="186" y="238" width="168" height="40" rx="20" fill="#f3f0ec"/>
+      <rect x="252" y="238" width="22" height="40" fill="#f2a19c"/>
+      <rect x="292" y="238" width="22" height="40" fill="#f2a19c"/>
+    </g>
+    <circle cx="206" cy="258" r="25" fill="#f3f0ec"/>
+    <circle cx="206" cy="258" r="9" fill="#e86a66"/>
+  </symbol>
+  <symbol id="tg-icon" viewBox="0 0 512 512">
+    <circle cx="256" cy="256" r="250" fill="#6e1418"/>
+    <g clip-path="url(#tgC)">
+      <rect x="-80" y="-80" width="672" height="672" fill="url(#tgG)" filter="url(#tgM)"/>
+      <circle cx="256" cy="256" r="240" fill="url(#tgH)"/>
+      <g fill="none" stroke="#6e1418" stroke-opacity=".28" stroke-width="3">
+        <circle cx="256" cy="256" r="220"/><circle cx="256" cy="256" r="196"/><circle cx="256" cy="256" r="172"/><circle cx="256" cy="256" r="148"/>
+      </g>
+    </g>
+    <path d="M78 214 A182 182 0 0 1 214 78" fill="none" stroke="#fff" stroke-opacity=".78" stroke-width="24" stroke-linecap="round"/>
+    <path d="M112 176 A150 150 0 0 1 150 122" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="256" cy="256" r="124" fill="#0b0a0a"/>
+    <circle cx="256" cy="256" r="116" fill="none" stroke="#161313" stroke-width="4"/>
+    <use href="#tg-gate"/>
+  </symbol>
+  <symbol id="groove" viewBox="0 0 1200 64">
+    <path d="M60 62 A540 56 0 0 1 1140 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M160 62 A440 46 0 0 1 1040 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path class="hot" d="M260 62 A340 36 0 0 1 940 62" fill="none" stroke="#b3242b" stroke-width="1.6" stroke-opacity=".7"/>
+    <path d="M360 62 A240 26 0 0 1 840 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M460 62 A140 16 0 0 1 740 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3Zm-1.08 16.18h1.7L7.42 4.73H5.6l11.07 14.45Z"/></symbol>
+</svg>
+
+<!-- NAV -->
+<header class="site-nav" id="nav">
+  <div class="progress-tape" aria-hidden="true"><i></i><b class="tape-coin"><svg viewBox="0 0 512 512"><use href="#tg-icon"/></svg></b></div>
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html" aria-label="TickGate home"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+    <ul class="nav-links">
+      <li><a href="protocol.html">Protocol</a></li>
+      <li><a href="endpoints.html">Endpoints</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="token.html">$TGATE</a></li>
+      <li><a href="roadmap.html">Roadmap</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+    <a class="nav-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer" aria-label="TickGate on X"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg></a>
+    <a class="btn btn-ink btn-sm nav-cta" href="early-access.html">Early access</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><span></span></button>
+  </div>
+  <nav class="mobile-menu label" id="mobile-menu" hidden aria-label="Mobile">
+    <a href="index.html">Home</a><a href="protocol.html">Protocol</a><a href="endpoints.html">Endpoints</a><a href="docs.html">Docs</a><a href="token.html">$TGATE</a><a href="roadmap.html">Roadmap</a><a href="faq.html">FAQ</a>
+    <a data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer">Follow on X ↗</a>
+    <a class="btn btn-crimson" href="early-access.html">Early access</a>
+  </nav>
+</header>
+
+<main id="main">
+<section class="page-hero paper" aria-labelledby="ph-h">
+  <div class="wrap ph-grid">
+    <div>
+      <div class="crumbs ph-in"><a href="index.html">TickGate</a> / FAQ</div>
+      <div class="eyebrow">FAQ</div>
+      <h1 id="ph-h" class="hl"><span class="ln"><span>Questions at</span></span><span class="ln"><span><em>the counter.</em></span></span></h1>
+      <p class="lead ph-in">Short answers about the gate, the toll, the data and the token. Can't find yours? Ask <a data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer">@ticketgaterh</a> on X.</p>
+      <div class="ph-chips ph-in"><span class="chip chip-rh"><i aria-hidden="true"></i>Robinhood Chain</span></div>
+    </div>
+    <div class="ph-art" aria-hidden="true">
+      <div class="ph-ring"></div>
+      <svg viewBox="0 0 400 400"><use href="#tg-icon" x="70" y="70" width="260" height="260" class="spin-slow"/><text x="200" y="380" text-anchor="middle" fill="#b3242b" style="font:700 30px 'Space Grotesk',sans-serif">?</text></svg>
+    </div>
+  </div>
+</section>
+
+<section class="band paper" aria-label="Questions">
+  <div class="wrap">
+    <div class="faq-tools">
+      <div class="tabs" role="group" aria-label="Filter questions">
+        <button class="tab" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="tab" type="button" data-filter="general" aria-pressed="false">General</button>
+        <button class="tab" type="button" data-filter="pay" aria-pressed="false">Paying</button>
+        <button class="tab" type="button" data-filter="agents" aria-pressed="false">Agents</button>
+        <button class="tab" type="button" data-filter="data" aria-pressed="false">Data</button>
+        <button class="tab" type="button" data-filter="token" aria-pressed="false">Token</button>
+      </div>
+      <label class="sr-only" for="faqSearch">Search questions</label>
+      <input class="search" id="faqSearch" type="search" placeholder="Search questions" autocomplete="off">
+    </div>
+    <div class="faq-list" id="faqList" style="max-width:none">
+      <details class="acc" data-cat="general"><summary><span><span class="faq-cat">General</span>What is TickGate?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Pay-per-call market data for AI agents on Robinhood Chain. Your agent pays a few cents in stablecoin per request and gets the data plus an on-chain receipt. No API keys, no plans.</div></details>
+      <details class="acc" data-cat="general"><summary><span><span class="faq-cat">General</span>Is it live?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Not yet. This is a pre-launch preview. api.tickgate.live is not live, and all data on this site is sample data. See the <a href="roadmap.html">roadmap</a>.</div></details>
+      <details class="acc" data-cat="general"><summary><span><span class="faq-cat">General</span>Is this affiliated with Robinhood?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">No. TickGate is an independent project built for Robinhood Chain. It is not affiliated with Robinhood Markets, Inc.</div></details>
+      <details class="acc" data-cat="general"><summary><span><span class="faq-cat">General</span>Where do I get official news?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Only on tickgate.live and on X at <a data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer">@ticketgaterh</a>.</div></details>
+      <details class="acc" data-cat="pay"><summary><span><span class="faq-cat">Paying</span>What is HTTP 402?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">402 Payment Required is a status code that has been in the HTTP spec since the 1990s, reserved for payments. TickGate uses it as intended: the server replies 402 with a price quote, the client pays, then retries with proof of payment.</div></details>
+      <details class="acc" data-cat="pay"><summary><span><span class="faq-cat">Paying</span>Which chain?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Robinhood Chain, an Arbitrum Orbit L2 (chain ID 4663). Gas is paid in ETH; calls are priced in a USD stablecoin.</div></details>
+      <details class="acc" data-cat="pay"><summary><span><span class="faq-cat">Paying</span>How much does a call cost?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Illustrative prices run from $0.001 to $0.01 per call depending on the route. The real price is always in the 402 quote before your agent pays.</div></details>
+      <details class="acc" data-cat="pay"><summary><span><span class="faq-cat">Paying</span>What if a quote expires?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Quotes last 30 seconds and can be used once. If it expires, ask again for a fresh quote. Don't pay an expired one.</div></details>
+      <details class="acc" data-cat="pay"><summary><span><span class="faq-cat">Paying</span>Do I need the $TGATE token to pay?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">No. Every call is paid in a USD stablecoin. $TGATE is not required to use the API.</div></details>
+      <details class="acc" data-cat="agents"><summary><span><span class="faq-cat">Agents</span>Do I need an API key?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">No. Payment is the authorization. No keys, no accounts, no monthly plans.</div></details>
+      <details class="acc" data-cat="agents"><summary><span><span class="faq-cat">Agents</span>How do I stop an agent overspending?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">The SDK planned for launch checks a per-call cap, a daily cap, an endpoint allowlist and a kill switch before it signs. Also give each agent its own small wallet. See <a href="docs.html#budgets">budgets</a>.</div></details>
+      <details class="acc" data-cat="agents"><summary><span><span class="faq-cat">Agents</span>Is there an SDK?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Not yet. JavaScript and Python SDKs are planned. The <a href="docs.html#sdk">docs</a> show the intended shape in pseudo-code.</div></details>
+      <details class="acc" data-cat="data"><summary><span><span class="faq-cat">Data</span>What data is available?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Nine planned routes for stock tokens on Robinhood Chain: price, depth and history. See the <a href="endpoints.html">endpoints</a> page.</div></details>
+      <details class="acc" data-cat="data"><summary><span><span class="faq-cat">Data</span>Are the prices on this site real?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">No. Every price, chart, receipt and symbol on this site is sample data, marked SAMPLE, SIMULATED or illustrative.</div></details>
+      <details class="acc" data-cat="data"><summary><span><span class="faq-cat">Data</span>Can I use it where I live?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Stock tokens may be restricted in your jurisdiction. Check local rules before using the data or trading.</div></details>
+      <details class="acc" data-cat="token" id="token"><summary><span><span class="faq-cat">Token</span>What is $TGATE?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">The community token for the TickGate project. It isn't required to use the API, and nothing here is financial advice or a promise of value. See the <a href="token.html">token page</a>.</div></details>
+      <details class="acc" data-cat="token"><summary><span><span class="faq-cat">Token</span>What's the contract address?</span><span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Announced at launch, only on tickgate.live and @ticketgaterh. Anyone sending you a CA before that is not us.</div></details>
+    </div>
+    <p class="empty" id="faqEmpty" hidden>No questions match. Try “402” or “chain”.</p>
+  </div>
+</section>
+</main>
+
+<footer class="site-foot label" aria-label="Site footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="index.html"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+        <p class="blurb">Pay-per-call market data for AI agents on Robinhood Chain. Pay the toll. Pass the gate. Pre-launch preview.</p>
+        <a class="foot-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>@ticketgaterh</a>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="protocol.html">Protocol</a></li><li><a href="endpoints.html">Endpoints</a></li><li><a href="docs.html">Docs</a></li><li><a href="index.html#try">Try it</a></li></ul></div>
+      <div><h4>Project</h4><ul><li><a href="token.html">$TGATE</a></li><li><a href="roadmap.html">Roadmap</a></li><li><a href="faq.html">FAQ</a></li><li><a href="early-access.html">Early access</a></li><li><a href="brand/export.html">Brand kit</a></li></ul></div>
+      <div><h4>Status</h4><ul><li><span class="dot-live" aria-hidden="true"></span>Pre-launch</li><li>API not live yet</li><li>Chain ID 4663</li><li>Sample data only</li><li><a href="https://tickgate.live/">tickgate.live</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <span>Sample data only. Not financial advice. Not affiliated with Robinhood Markets, Inc. Stock tokens may be restricted in your jurisdiction.</span>
+      <span>© <span data-year>2026</span> TickGate · tickgate.live</span>
+    </div>
+  </div>
+</footer>
+
+
+<script type="module" src="assets/pages.js"></script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en" data-page="docs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Docs · TickGate · Robinhood Chain market data, paid per call</title>
+<meta name="description" content="Robinhood Chain market data docs: quickstart, the HTTP 402 flow, quote objects, paying on chain 4663, the X-Payment header, receipts, errors, budgets and SDK pseudo-code. Draft spec, pre-launch.">
+<link rel="canonical" href="https://tickgate.live/docs.html">
+<meta name="theme-color" content="#f3f0ec">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TickGate">
+<meta property="og:url" content="https://tickgate.live/docs.html">
+<meta property="og:title" content="Docs · TickGate · Robinhood Chain market data, paid per call">
+<meta property="og:description" content="Robinhood Chain market data docs: quickstart, the HTTP 402 flow, quote objects, paying on chain 4663, the X-Payment header, receipts, errors, budgets and SDK pseudo-code. Draft spec, pre-launch.">
+<meta property="og:image" content="https://tickgate.live/brand/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TickGate: Insert coin. Get data.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ticketgaterh">
+<meta name="twitter:title" content="Docs · TickGate · Robinhood Chain market data, paid per call">
+<meta name="twitter:description" content="Robinhood Chain market data docs: quickstart, the HTTP 402 flow, quote objects, paying on chain 4663, the X-Payment header, receipts, errors, budgets and SDK pseudo-code. Draft spec, pre-launch.">
+<meta name="twitter:image" content="https://tickgate.live/brand/og-image.png">
+<link rel="icon" href="brand/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.23/dist/lenis.mjs"
+  }
+}
+</script>
+<link rel="modulepreload" href="assets/core.js">
+<script>/* early flags: page-transition entry + once-per-session home intro (CSS reveals everything after 2.6s if scripts never run) */
+(function(){var d=document.documentElement,rm=matchMedia('(prefers-reduced-motion: reduce)').matches,ss;try{ss=sessionStorage}catch(e){}
+d.classList.add('js');if(rm)return;
+try{if(ss&&ss.getItem('tg-wipe')){ss.removeItem('tg-wipe');d.classList.add('tg-enter')}}catch(e){}
+try{if(d.dataset.page==='home'&&ss&&!ss.getItem('tg-intro')&&!location.hash){d.classList.add('intro')}}catch(e){}})();</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+</head>
+<body class="page-docs">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- SVG sprite: brand icon (gate mark) + marble filters (not display:none so filters resolve) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="tgG" gradientUnits="userSpaceOnUse" cx="164" cy="143" r="400">
+      <stop offset="0" stop-color="#f8c9c4"/><stop offset=".18" stop-color="#f2a19c"/>
+      <stop offset=".45" stop-color="#e86a66"/><stop offset=".75" stop-color="#c43a3a"/>
+      <stop offset="1" stop-color="#8f1d22"/>
+    </radialGradient>
+    <filter id="tgM" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 0 .25 1 .2 0 0 .45 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .85 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="SourceAlpha" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <clipPath id="tgC"><circle cx="256" cy="256" r="240"/></clipPath>
+    <radialGradient id="tgH" cx="30%" cy="26%" r="34%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <!-- page marble: sheen on buttons/cards -->
+    <filter id="mf" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="34" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 .3 1 .2 0 .5 0 0 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .7 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="w" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <!-- divider marble: gentle warp on hairlines -->
+    <filter id="mfd" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  1.4 0 0 0 -.55" result="tint"/>
+      <feComposite in="tint" in2="w" operator="in" result="ti"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="ti"/></feMerge>
+    </filter>
+    <linearGradient id="fbRib" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#c43a3a"/><stop offset=".35" stop-color="#e86a66"/><stop offset=".55" stop-color="#f2a19c"/><stop offset=".8" stop-color="#e86a66"/><stop offset="1" stop-color="#b3242b"/>
+    </linearGradient>
+  </defs>
+  <symbol id="tg-gate" viewBox="0 0 512 512">
+    <rect x="186" y="256" width="40" height="80" rx="12" fill="#f3f0ec"/>
+    <rect x="172" y="322" width="68" height="22" rx="11" fill="#f3f0ec"/>
+    <g transform="rotate(-35 206 258)">
+      <rect x="186" y="238" width="168" height="40" rx="20" fill="#f3f0ec"/>
+      <rect x="252" y="238" width="22" height="40" fill="#f2a19c"/>
+      <rect x="292" y="238" width="22" height="40" fill="#f2a19c"/>
+    </g>
+    <circle cx="206" cy="258" r="25" fill="#f3f0ec"/>
+    <circle cx="206" cy="258" r="9" fill="#e86a66"/>
+  </symbol>
+  <symbol id="tg-icon" viewBox="0 0 512 512">
+    <circle cx="256" cy="256" r="250" fill="#6e1418"/>
+    <g clip-path="url(#tgC)">
+      <rect x="-80" y="-80" width="672" height="672" fill="url(#tgG)" filter="url(#tgM)"/>
+      <circle cx="256" cy="256" r="240" fill="url(#tgH)"/>
+      <g fill="none" stroke="#6e1418" stroke-opacity=".28" stroke-width="3">
+        <circle cx="256" cy="256" r="220"/><circle cx="256" cy="256" r="196"/><circle cx="256" cy="256" r="172"/><circle cx="256" cy="256" r="148"/>
+      </g>
+    </g>
+    <path d="M78 214 A182 182 0 0 1 214 78" fill="none" stroke="#fff" stroke-opacity=".78" stroke-width="24" stroke-linecap="round"/>
+    <path d="M112 176 A150 150 0 0 1 150 122" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="256" cy="256" r="124" fill="#0b0a0a"/>
+    <circle cx="256" cy="256" r="116" fill="none" stroke="#161313" stroke-width="4"/>
+    <use href="#tg-gate"/>
+  </symbol>
+  <symbol id="groove" viewBox="0 0 1200 64">
+    <path d="M60 62 A540 56 0 0 1 1140 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M160 62 A440 46 0 0 1 1040 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path class="hot" d="M260 62 A340 36 0 0 1 940 62" fill="none" stroke="#b3242b" stroke-width="1.6" stroke-opacity=".7"/>
+    <path d="M360 62 A240 26 0 0 1 840 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M460 62 A140 16 0 0 1 740 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3Zm-1.08 16.18h1.7L7.42 4.73H5.6l11.07 14.45Z"/></symbol>
+</svg>
+
+<!-- NAV -->
+<header class="site-nav" id="nav">
+  <div class="progress-tape" aria-hidden="true"><i></i><b class="tape-coin"><svg viewBox="0 0 512 512"><use href="#tg-icon"/></svg></b></div>
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html" aria-label="TickGate home"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+    <ul class="nav-links">
+      <li><a href="protocol.html">Protocol</a></li>
+      <li><a href="endpoints.html">Endpoints</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="token.html">$TGATE</a></li>
+      <li><a href="roadmap.html">Roadmap</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+    <a class="nav-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer" aria-label="TickGate on X"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg></a>
+    <a class="btn btn-ink btn-sm nav-cta" href="early-access.html">Early access</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><span></span></button>
+  </div>
+  <nav class="mobile-menu label" id="mobile-menu" hidden aria-label="Mobile">
+    <a href="index.html">Home</a><a href="protocol.html">Protocol</a><a href="endpoints.html">Endpoints</a><a href="docs.html">Docs</a><a href="token.html">$TGATE</a><a href="roadmap.html">Roadmap</a><a href="faq.html">FAQ</a>
+    <a data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer">Follow on X ↗</a>
+    <a class="btn btn-crimson" href="early-access.html">Early access</a>
+  </nav>
+</header>
+
+<main id="main">
+<section class="page-hero label glow-zone" aria-labelledby="ph-h">
+  <div class="wrap ph-grid">
+    <div>
+      <div class="crumbs ph-in"><a href="index.html">TickGate</a> / Docs</div>
+      <div class="eyebrow">Docs · draft spec v0.1</div>
+      <h1 id="ph-h" class="hl"><span class="ln"><span>Read the</span></span><span class="ln"><span><em>manual.</em></span></span></h1>
+      <p class="lead ph-in">Everything an agent needs to get through the gate: ask, read the 402 quote, pay, retry with proof, keep the receipt. This is a draft written ahead of launch, so names and limits may still change.</p>
+      <div class="ph-chips ph-in"><span class="chip chip-rh"><i aria-hidden="true"></i>Robinhood Chain</span><span class="chip sample">Draft · subject to change</span><span class="chip">API not live yet · pre-launch</span></div>
+    </div>
+    <div class="ph-art" aria-hidden="true">
+      <div class="ph-ring"></div>
+      <svg viewBox="0 0 400 400">
+        <rect x="40" y="70" width="320" height="260" rx="26" fill="#161313" stroke="rgba(242,161,156,.2)"/>
+        <g class="term-lines" style="font:500 14px 'JetBrains Mono',monospace" transform="translate(-30 0)">
+          <text x="96" y="122" fill="#9a918c">$ curl -i api.tickgate.live</text>
+          <text x="96" y="152" fill="#e86a66">HTTP/1.1 402</text>
+          <text x="96" y="182" fill="#f2a19c">"price": "0.001"</text>
+          <text x="96" y="212" fill="#f2a19c">"chainId": 4663</text>
+          <text x="96" y="242" fill="#3fbf72">HTTP/1.1 200 OK</text>
+          <text x="96" y="272" fill="#f3f0ec">"receipt": "0x9f4e…"</text>
+        </g>
+        <rect class="docs-caret" x="66" y="288" width="10" height="18" fill="#f2a19c"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="wrap docs">
+  <aside class="docs-side" aria-label="Docs navigation">
+    <label class="sr-only" for="docSearch">Filter docs</label>
+    <input class="search" id="docSearch" type="search" placeholder="Filter sections" autocomplete="off">
+    <h4>Start</h4>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#quickstart">Quickstart</a></li>
+      <li><a href="#flow">The 402 flow</a></li>
+    </ul>
+    <h4>Paying</h4>
+    <ul>
+      <li><a href="#quote">Quote object</a></li>
+      <li><a href="#pay">Paying a quote</a></li>
+      <li><a href="#header">X-Payment header</a></li>
+      <li><a href="#receipts">Receipts</a></li>
+    </ul>
+    <h4>Running agents</h4>
+    <ul>
+      <li><a href="#budgets">Budgets and rules</a></li>
+      <li><a href="#errors">Errors</a></li>
+      <li><a href="#limits">Limits and expiry</a></li>
+    </ul>
+    <h4>Reference</h4>
+    <ul>
+      <li><a href="#endpoints">Endpoints</a></li>
+      <li><a href="#sdk">SDK pseudo-code</a></li>
+      <li><a href="#security">Security notes</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+      <li><a href="#changelog">Changelog</a></li>
+    </ul>
+  </aside>
+
+  <article class="doc">
+    <div class="doc-banner"><b>PRE-LAUNCH</b> api.tickgate.live is not live yet. Every example on this page is sample data.</div>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>TickGate sells market data for stock tokens on Robinhood Chain one call at a time. There are no API keys and no plans. Instead, every request goes through a toll gate built on <code>HTTP 402 Payment Required</code>: the first answer is a price, your agent pays it in a USD stablecoin, and the retry returns the data with an on-chain receipt.</p>
+      <ul>
+        <li><strong>Who it's for:</strong> AI agents and scripts that need a quote, a book or a candle, and shouldn't hold a long-lived secret.</li>
+        <li><strong>What it costs:</strong> a few tenths of a cent to a cent per call (illustrative), shown in the quote before you pay.</li>
+        <li><strong>Where it settles:</strong> Robinhood Chain, chain ID 4663. Gas is paid in ETH.</li>
+      </ul>
+    </section>
+
+    <section id="quickstart">
+      <h2>Quickstart</h2>
+      <ol class="steps-n">
+        <li>Fund a wallet on Robinhood Chain with a little ETH for gas and a few dollars of the supported stablecoin.</li>
+        <li>Call an endpoint with no headers. Expect <code>402</code>.</li>
+        <li>Read the quote, check it against your budget, and pay <code>price</code> to <code>payTo</code>.</li>
+        <li>Repeat the same request with <code>X-Payment</code> set to your payment proof.</li>
+        <li>Store <code>receipt</code> from the <code>200</code> response.</li>
+      </ol>
+      <div class="doc-code"><div class="bar">shell · sample<button class="copy-btn" type="button" data-copy>Copy</button></div><pre data-hl><code># 1. ask (API not live yet · pre-launch)
+curl -i "https://api.tickgate.live/v1/price?symbol=STK·A"
+
+# 2. after paying the quote, retry with proof
+curl -i -H "X-Payment: &lt;proof&gt;" "https://api.tickgate.live/v1/price?symbol=STK·A"</code></pre></div>
+    </section>
+
+    <section id="flow">
+      <h2>The 402 flow</h2>
+      <p>Every paid call is two HTTP requests with one on-chain payment in between. The gate never asks who you are, only whether this exact request has been paid for.</p>
+      <div class="doc-code"><div class="bar">http · sample</div><pre><code>GET /v1/price?symbol=STK·A
+→ 402 Payment Required        { quote }
+
+(agent pays quote.price to quote.payTo on chain 4663)
+
+GET /v1/price?symbol=STK·A
+X-Payment: &lt;proof&gt;
+→ 200 OK                      { data, receipt }</code></pre></div>
+      <p>See it animated on the <a href="protocol.html#flow">protocol page</a>, or run a simulated round trip on the <a href="index.html#try">home page</a>.</p>
+    </section>
+
+    <section id="quote">
+      <h2>Quote object</h2>
+      <p>The body of every <code>402</code> response. A quote is tied to one request and can be paid once.</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>price</code></td><td>string</td><td>Amount to pay, decimal string in asset units.</td></tr>
+          <tr><td><code>asset</code></td><td>string</td><td>The USD stablecoin accepted for this call.</td></tr>
+          <tr><td><code>chainId</code></td><td>int</td><td>Always <code>4663</code> (Robinhood Chain).</td></tr>
+          <tr><td><code>payTo</code></td><td>address</td><td>Where the toll goes. Check it against your allowlist.</td></tr>
+          <tr><td><code>nonce</code></td><td>string</td><td>Binds a payment to this quote. Single use.</td></tr>
+          <tr><td><code>expiresIn</code></td><td>string</td><td>Validity window, <code>30s</code> by default.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="doc-code"><div class="bar">json · sample<button class="copy-btn" type="button" data-copy>Copy</button></div><pre><code>{
+  "price": "0.001",
+  "asset": "USD stablecoin",
+  "chainId": 4663,
+  "payTo": "0x7A3c…9F02",
+  "nonce": "q_8f21…",
+  "expiresIn": "30s"
+}</code></pre></div>
+    </section>
+
+    <section id="pay">
+      <h2>Paying a quote</h2>
+      <p>Send exactly <code>price</code> of <code>asset</code> to <code>payTo</code> on chain 4663, carrying the quote's <code>nonce</code> so the gate can match it. Pay before <code>expiresIn</code> runs out; late payments don't unlock a stale quote.</p>
+      <div class="note"><b>Tip</b><span>Check the quote before signing: price under your per-call cap, payTo on your allowlist, chainId equal to 4663.</span></div>
+    </section>
+
+    <section id="header">
+      <h2>X-Payment header</h2>
+      <p>Retry the identical request (same method, path and query) with one extra header. Its value is the proof of payment: a reference to the settled transaction plus the quote nonce. The exact encoding will be published with the SDK.</p>
+      <div class="doc-code"><div class="bar">http · sample</div><pre><code>GET /v1/price?symbol=STK·A HTTP/1.1
+Host: api.tickgate.live
+X-Payment: 0x4b1e…(sample)</code></pre></div>
+    </section>
+
+    <section id="receipts">
+      <h2>Receipts</h2>
+      <p>Every <code>200</code> carries a <code>receipt</code>: the transaction hash, amount, endpoint and time. Keep it. It's how an operator reconciles agent spend line by line, and how a dispute gets settled.</p>
+      <div class="doc-code"><div class="bar">json · sample<button class="copy-btn" type="button" data-copy>Copy</button></div><pre><code>{
+  "data": { "symbol": "STK·A", "last": "182.40" },
+  "receipt": {
+    "tx": "0x9f4e…c2a1",
+    "amount": "0.001",
+    "endpoint": "/v1/price?symbol=STK·A",
+    "chainId": 4663,
+    "sample": true
+  }
+}</code></pre></div>
+    </section>
+
+    <section id="budgets">
+      <h2>Budgets and rules</h2>
+      <p>Because payment is the only authorization, budgets live with the agent. The SDK planned for launch checks four rules before it signs anything. If any fails, it doesn't pay.</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Rule</th><th>What it stops</th></tr></thead>
+        <tbody>
+          <tr><td>Per-call cap</td><td>A single quote above your ceiling.</td></tr>
+          <tr><td>Daily cap</td><td>Spend past the day's budget.</td></tr>
+          <tr><td>Allowlist</td><td>Endpoints or pay-to addresses you didn't approve.</td></tr>
+          <tr><td>Kill switch</td><td>Everything, for one agent or the whole fleet.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="errors">
+      <h2>Errors</h2>
+      <p>Errors are JSON with a stable <code>code</code> and a human <code>message</code>. Planned codes:</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Status</th><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="num">400</td><td><code>bad_request</code></td><td>Missing or invalid parameter.</td></tr>
+          <tr><td class="num">402</td><td><code>payment_required</code></td><td>Unpaid request. Body is a fresh quote.</td></tr>
+          <tr><td class="num">402</td><td><code>quote_expired</code></td><td>Proof matched a quote older than its window. Ask again.</td></tr>
+          <tr><td class="num">409</td><td><code>quote_used</code></td><td>That nonce already unlocked a response.</td></tr>
+          <tr><td class="num">422</td><td><code>payment_mismatch</code></td><td>Wrong amount, asset, chain or pay-to.</td></tr>
+          <tr><td class="num">429</td><td><code>slow_down</code></td><td>Too many unpaid requests from one client.</td></tr>
+          <tr><td class="num">503</td><td><code>gate_closed</code></td><td>Maintenance or upstream data unavailable. You weren't charged.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="limits">
+      <h2>Limits and expiry</h2>
+      <ul>
+        <li>Quotes expire after <strong>30 seconds</strong> and are single use.</li>
+        <li>Batch price calls accept up to <strong>20 symbols</strong> for one toll.</li>
+        <li>Unpaid requests may be rate limited per client to keep the gate responsive.</li>
+        <li>All limits are draft values and will be confirmed at launch.</li>
+      </ul>
+    </section>
+
+    <section id="endpoints">
+      <h2>Endpoints</h2>
+      <p>Nine planned routes. Full parameters and sample responses are on the <a href="endpoints.html">endpoints page</a>. Prices are illustrative.</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th></th><th>Route</th><th>Returns</th><th class="num">Per call</th></tr></thead>
+        <tbody><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/price</code></a></td><td>Last, bid, ask and timestamp for one stock token.</td><td class="num">$0.001</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/price/batch</code></a></td><td>Up to 20 symbols, one payment.</td><td class="num">$0.001</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/price/spread</code></a></td><td>Bid/ask spread and mid price.</td><td class="num">$0.001</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/depth</code></a></td><td>Top 5×5 order book levels.</td><td class="num">$0.003</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/depth/full</code></a></td><td>Up to 50 levels per side.</td><td class="num">$0.003</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/depth/imbalance</code></a></td><td>Bid/ask volume ratio at the top of book.</td><td class="num">$0.003</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/history</code></a></td><td>OHLC candles from 1m to 1d.</td><td class="num">$0.01</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/history/trades</code></a></td><td>Recent fills with size and side.</td><td class="num">$0.01</td></tr><tr><td><span class="method">GET</span></td><td><a href="endpoints.html"><code>/v1/history/vwap</code></a></td><td>Volume-weighted average over a window.</td><td class="num">$0.01</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section id="sdk">
+      <h2>SDK pseudo-code</h2>
+      <p>The SDK ships at launch. Until then, this is the shape of it.</p>
+      <div class="doc-code code-tabs">
+        <div class="bar" role="tablist" aria-label="Language">
+          <button class="code-tab" role="tab" aria-selected="true" aria-controls="sdk-js" id="sdk-tab-js" type="button">JavaScript</button>
+          <button class="code-tab" role="tab" aria-selected="false" aria-controls="sdk-py" id="sdk-tab-py" type="button" tabindex="-1">Python</button>
+          <button class="copy-btn" type="button" data-copy>Copy</button>
+        </div>
+        <pre id="sdk-js" role="tabpanel" aria-labelledby="sdk-tab-js" data-hl><code>// pseudo-code · SDK at launch · API not live yet
+import { TickGate } from "tickgate";
+
+const gate = new TickGate({
+  wallet,                          // your Robinhood Chain wallet
+  caps: { perCall: "0.01", daily: "5.00" },
+  allow: ["/v1/price", "/v1/depth"],
+});
+
+const { data, receipt } = await gate.get("/v1/price", { symbol: "STK·A" });
+console.log(data.last, receipt.tx);</code></pre>
+        <pre id="sdk-py" role="tabpanel" aria-labelledby="sdk-tab-py" data-hl hidden><code># pseudo-code · SDK at launch · API not live yet
+from tickgate import TickGate
+
+gate = TickGate(
+    wallet=wallet,                 # your Robinhood Chain wallet
+    caps={"per_call": "0.01", "daily": "5.00"},
+    allow=["/v1/price", "/v1/depth"],
+)
+
+res = gate.get("/v1/price", symbol="STK·A")
+print(res.data["last"], res.receipt["tx"])</code></pre>
+      </div>
+    </section>
+
+    <section id="security">
+      <h2>Security notes</h2>
+      <ul>
+        <li>Give each agent its own wallet with only what it needs to spend. Top it up; don't overfund it.</li>
+        <li>Always verify <code>chainId</code> and <code>payTo</code>. Never pay a quote that arrived from anywhere but the gate you called.</li>
+        <li>The only official site is <strong>tickgate.live</strong> and the only official X account is <a href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer">@ticketgaterh</a>.</li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <h2>Glossary</h2>
+      <div class="tbl-wrap"><table class="tbl"><tbody>
+        <tr><td><strong>Toll</strong></td><td>The price of one call, paid per request.</td></tr>
+        <tr><td><strong>Gate</strong></td><td>The TickGate API, which answers 402 until paid.</td></tr>
+        <tr><td><strong>Quote</strong></td><td>A single-use price for one request, valid for 30 seconds.</td></tr>
+        <tr><td><strong>Proof</strong></td><td>The X-Payment value that points at your settled payment.</td></tr>
+        <tr><td><strong>Receipt</strong></td><td>The on-chain record returned with your data.</td></tr>
+        <tr><td><strong>Stock token</strong></td><td>A tokenized stock on Robinhood Chain. Availability may be restricted where you live.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="changelog">
+      <h2>Changelog</h2>
+      <div class="tbl-wrap"><table class="tbl"><tbody>
+        <tr><td class="num">v0.1</td><td>First public draft of the quote, payment and receipt flow. Pre-launch.</td></tr>
+      </tbody></table></div>
+    </section>
+  </article>
+</div>
+</main>
+
+<footer class="site-foot label" aria-label="Site footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="index.html"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+        <p class="blurb">Pay-per-call market data for AI agents on Robinhood Chain. Pay the toll. Pass the gate. Pre-launch preview.</p>
+        <a class="foot-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>@ticketgaterh</a>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="protocol.html">Protocol</a></li><li><a href="endpoints.html">Endpoints</a></li><li><a href="docs.html">Docs</a></li><li><a href="index.html#try">Try it</a></li></ul></div>
+      <div><h4>Project</h4><ul><li><a href="token.html">$TGATE</a></li><li><a href="roadmap.html">Roadmap</a></li><li><a href="faq.html">FAQ</a></li><li><a href="early-access.html">Early access</a></li><li><a href="brand/export.html">Brand kit</a></li></ul></div>
+      <div><h4>Status</h4><ul><li><span class="dot-live" aria-hidden="true"></span>Pre-launch</li><li>API not live yet</li><li>Chain ID 4663</li><li>Sample data only</li><li><a href="https://tickgate.live/">tickgate.live</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <span>Sample data only. Not financial advice. Not affiliated with Robinhood Markets, Inc. Stock tokens may be restricted in your jurisdiction.</span>
+      <span>© <span data-year>2026</span> TickGate · tickgate.live</span>
+    </div>
+  </div>
+</footer>
+
+
+<script type="module" src="assets/pages.js"></script>
+</body>
+</html>

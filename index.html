@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en" data-page="home">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TickGate · Market data on Robinhood Chain, paid per call</title>
+<meta name="description" content="Robinhood Chain market data for AI agents, paid per call. Insert coin, get data: HTTP 402, a few cents in stablecoin, data plus an on-chain receipt. Pre-launch preview: all data shown is sample data.">
+<link rel="canonical" href="https://tickgate.live/">
+<meta name="theme-color" content="#f3f0ec">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TickGate">
+<meta property="og:url" content="https://tickgate.live/">
+<meta property="og:title" content="TickGate · Market data on Robinhood Chain, paid per call">
+<meta property="og:description" content="Robinhood Chain market data for AI agents, paid per call. Insert coin, get data: HTTP 402, a few cents in stablecoin, data plus an on-chain receipt. Pre-launch preview: all data shown is sample data.">
+<meta property="og:image" content="https://tickgate.live/brand/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TickGate: Insert coin. Get data.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ticketgaterh">
+<meta name="twitter:title" content="TickGate · Market data on Robinhood Chain, paid per call">
+<meta name="twitter:description" content="Robinhood Chain market data for AI agents, paid per call. Insert coin, get data: HTTP 402, a few cents in stablecoin, data plus an on-chain receipt. Pre-launch preview: all data shown is sample data.">
+<meta name="twitter:image" content="https://tickgate.live/brand/og-image.png">
+<link rel="icon" href="brand/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.23/dist/lenis.mjs"
+  }
+}
+</script>
+<link rel="modulepreload" href="assets/core.js">
+<script>/* early flags: page-transition entry + once-per-session home intro (CSS reveals everything after 2.6s if scripts never run) */
+(function(){var d=document.documentElement,rm=matchMedia('(prefers-reduced-motion: reduce)').matches,ss;try{ss=sessionStorage}catch(e){}
+d.classList.add('js');if(rm)return;
+try{if(ss&&ss.getItem('tg-wipe')){ss.removeItem('tg-wipe');d.classList.add('tg-enter')}}catch(e){}
+try{if(d.dataset.page==='home'&&ss&&!ss.getItem('tg-intro')&&!location.hash){d.classList.add('intro')}}catch(e){}})();</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+</head>
+<body class="home">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- SVG sprite: brand icon (gate mark) + marble filters (not display:none so filters resolve) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="tgG" gradientUnits="userSpaceOnUse" cx="164" cy="143" r="400">
+      <stop offset="0" stop-color="#f8c9c4"/><stop offset=".18" stop-color="#f2a19c"/>
+      <stop offset=".45" stop-color="#e86a66"/><stop offset=".75" stop-color="#c43a3a"/>
+      <stop offset="1" stop-color="#8f1d22"/>
+    </radialGradient>
+    <filter id="tgM" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 0 .25 1 .2 0 0 .45 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .85 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="SourceAlpha" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <clipPath id="tgC"><circle cx="256" cy="256" r="240"/></clipPath>
+    <radialGradient id="tgH" cx="30%" cy="26%" r="34%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <!-- page marble: sheen on buttons/cards -->
+    <filter id="mf" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="34" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 .3 1 .2 0 .5 0 0 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .7 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="w" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <!-- divider marble: gentle warp on hairlines -->
+    <filter id="mfd" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  1.4 0 0 0 -.55" result="tint"/>
+      <feComposite in="tint" in2="w" operator="in" result="ti"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="ti"/></feMerge>
+    </filter>
+    <linearGradient id="fbRib" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#c43a3a"/><stop offset=".35" stop-color="#e86a66"/><stop offset=".55" stop-color="#f2a19c"/><stop offset=".8" stop-color="#e86a66"/><stop offset="1" stop-color="#b3242b"/>
+    </linearGradient>
+  </defs>
+  <symbol id="tg-gate" viewBox="0 0 512 512">
+    <rect x="186" y="256" width="40" height="80" rx="12" fill="#f3f0ec"/>
+    <rect x="172" y="322" width="68" height="22" rx="11" fill="#f3f0ec"/>
+    <g transform="rotate(-35 206 258)">
+      <rect x="186" y="238" width="168" height="40" rx="20" fill="#f3f0ec"/>
+      <rect x="252" y="238" width="22" height="40" fill="#f2a19c"/>
+      <rect x="292" y="238" width="22" height="40" fill="#f2a19c"/>
+    </g>
+    <circle cx="206" cy="258" r="25" fill="#f3f0ec"/>
+    <circle cx="206" cy="258" r="9" fill="#e86a66"/>
+  </symbol>
+  <symbol id="tg-icon" viewBox="0 0 512 512">
+    <circle cx="256" cy="256" r="250" fill="#6e1418"/>
+    <g clip-path="url(#tgC)">
+      <rect x="-80" y="-80" width="672" height="672" fill="url(#tgG)" filter="url(#tgM)"/>
+      <circle cx="256" cy="256" r="240" fill="url(#tgH)"/>
+      <g fill="none" stroke="#6e1418" stroke-opacity=".28" stroke-width="3">
+        <circle cx="256" cy="256" r="220"/><circle cx="256" cy="256" r="196"/><circle cx="256" cy="256" r="172"/><circle cx="256" cy="256" r="148"/>
+      </g>
+    </g>
+    <path d="M78 214 A182 182 0 0 1 214 78" fill="none" stroke="#fff" stroke-opacity=".78" stroke-width="24" stroke-linecap="round"/>
+    <path d="M112 176 A150 150 0 0 1 150 122" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="256" cy="256" r="124" fill="#0b0a0a"/>
+    <circle cx="256" cy="256" r="116" fill="none" stroke="#161313" stroke-width="4"/>
+    <use href="#tg-gate"/>
+  </symbol>
+  <symbol id="groove" viewBox="0 0 1200 64">
+    <path d="M60 62 A540 56 0 0 1 1140 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M160 62 A440 46 0 0 1 1040 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path class="hot" d="M260 62 A340 36 0 0 1 940 62" fill="none" stroke="#b3242b" stroke-width="1.6" stroke-opacity=".7"/>
+    <path d="M360 62 A240 26 0 0 1 840 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M460 62 A140 16 0 0 1 740 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3Zm-1.08 16.18h1.7L7.42 4.73H5.6l11.07 14.45Z"/></symbol>
+</svg>
+<!-- 3D layer -->
+<canvas id="gl" aria-hidden="true"></canvas>
+<svg id="gl-fallback" hidden aria-hidden="true" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <g opacity=".95">
+    <path d="M-120 1010 C 260 860, 420 700, 700 560 S 1200 300, 1720 -40" fill="none" stroke="#8f1d22" stroke-width="150" stroke-linecap="round" opacity=".25" transform="translate(0 18)"/>
+    <path d="M-120 1010 C 260 860, 420 700, 700 560 S 1200 300, 1720 -40" fill="none" stroke="url(#fbRib)" stroke-width="140" stroke-linecap="round" filter="url(#mf)"/>
+    <g fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2">
+      <path d="M-120 1010 C 260 860, 420 700, 700 560 S 1200 300, 1720 -40" transform="translate(0 -40)"/>
+      <path d="M-120 1010 C 260 860, 420 700, 700 560 S 1200 300, 1720 -40" transform="translate(0 -14)"/>
+      <path d="M-120 1010 C 260 860, 420 700, 700 560 S 1200 300, 1720 -40" transform="translate(0 14)"/>
+    </g>
+    <use href="#tg-icon" x="210" y="790" width="96" height="96"/>
+    <use href="#tg-icon" x="520" y="590" width="84" height="84"/>
+    <use href="#tg-icon" x="820" y="460" width="100" height="100"/>
+    <use href="#tg-icon" x="1120" y="290" width="86" height="86"/>
+    <use href="#tg-icon" x="1380" y="150" width="92" height="92"/>
+  </g>
+</svg>
+
+<!-- NAV -->
+<header class="site-nav" id="nav">
+  <div class="progress-tape" aria-hidden="true"><i></i><b class="tape-coin"><svg viewBox="0 0 512 512"><use href="#tg-icon"/></svg></b></div>
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html" aria-label="TickGate home"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+    <ul class="nav-links">
+      <li><a href="protocol.html">Protocol</a></li>
+      <li><a href="endpoints.html">Endpoints</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="token.html">$TGATE</a></li>
+      <li><a href="roadmap.html">Roadmap</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+    <a class="nav-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer" aria-label="TickGate on X"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg></a>
+    <a class="btn btn-ink btn-sm nav-cta" href="early-access.html">Early access</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><span></span></button>
+  </div>
+  <nav class="mobile-menu label" id="mobile-menu" hidden aria-label="Mobile">
+    <a href="index.html">Home</a><a href="protocol.html">Protocol</a><a href="endpoints.html">Endpoints</a><a href="docs.html">Docs</a><a href="token.html">$TGATE</a><a href="roadmap.html">Roadmap</a><a href="faq.html">FAQ</a>
+    <a data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer">Follow on X ↗</a>
+    <a class="btn btn-crimson" href="early-access.html">Early access</a>
+  </nav>
+</header>
+
+<div class="intro-stage" aria-hidden="true">
+  <svg viewBox="0 0 320 220">
+    <rect x="40" y="96" width="132" height="104" rx="16" fill="#0b0a0a"/>
+    <rect class="i-slit" x="70" y="88" width="72" height="12" rx="6" fill="#e86a66"/>
+    <text x="106" y="156" text-anchor="middle" fill="#f2a19c" style="font:600 13px 'JetBrains Mono',monospace;letter-spacing:.12em">INSERT COIN</text>
+    <circle class="i-lamp" cx="152" cy="114" r="6" fill="#e86a66"/>
+    <rect x="200" y="118" width="16" height="82" rx="5" fill="#141110"/>
+    <rect x="188" y="192" width="40" height="12" rx="6" fill="#141110"/>
+    <g class="i-arm"><rect x="200" y="106" width="112" height="18" rx="9" fill="#141110"/><rect x="236" y="106" width="16" height="18" fill="#e86a66"/><rect x="270" y="106" width="16" height="18" fill="#e86a66"/></g>
+    <circle cx="208" cy="115" r="11" fill="#141110"/><circle cx="208" cy="115" r="4" fill="#e86a66"/>
+    <g class="i-coin"><use href="#tg-icon" x="86" y="-60" width="40" height="40"/></g>
+  </svg>
+  <p class="i-cap">ROBINHOOD CHAIN · CHAIN ID 4663</p>
+</div>
+<main id="main">
+
+<!-- HERO -->
+<section class="hero paper" id="top" aria-labelledby="hero-h">
+  <div class="wrap">
+    <div class="hero-copy">
+      <div class="eyebrow">SYS://TICKGATE.METER · ROBINHOOD CHAIN</div>
+      <h1 id="hero-h" class="hl hero-h1"><span class="ln"><span>Insert coin.</span></span><span class="ln"><span><em>Get data.</em></span></span><span class="ln ln-rh"><span>On <strong class="rh">Robinhood Chain</strong>.</span></span></h1>
+      <p class="tagline">Pay the toll. Pass the gate.</p>
+      <p class="sub">Pay-per-call market data for AI agents on Robinhood Chain. Your agent pays a few cents in stablecoin per request and gets the data plus an on-chain receipt. No API keys. No plans.</p>
+      <div class="cmd-card">
+        <div class="cmd-line"><span class="ps">$</span><span id="cmd-text" aria-hidden="true">curl api.tickgate.live/v1/price?symbol=STK·A</span><span class="caret" aria-hidden="true"></span><span class="sr-only">curl api.tickgate.live/v1/price?symbol=STK·A</span></div>
+        <div class="cmd-note"><span>API not live yet · pre-launch</span><span>→ 402 Payment Required</span></div>
+      </div>
+      <div class="actions">
+        <a class="btn btn-crimson" href="#try">Try a sample call <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-outline" href="protocol.html">How the gate works</a>
+      </div>
+      <div class="rh-badge"><span class="dot-live" aria-hidden="true"></span>Built for Robinhood Chain · Chain ID 4663</div>
+    </div>
+    <div class="hero-anchor" id="heroAnchor" aria-hidden="true">
+      <svg class="ha-fallback" viewBox="0 0 512 512"><use href="#tg-icon"/></svg>
+      <span class="chip ha-cap">the meter token · 33⅓ rpm</span>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#why" aria-label="Scroll to next section"><span></span></a>
+</section>
+
+<!-- MARQUEES -->
+<div class="marquee label" aria-hidden="true">
+  <div class="mq-track">
+    <div class="mq-group"><span>REQUEST</span><i>✦</i><span>402</span><i>✦</i><span>PAY THE TOLL</span><i>✦</i><span>PASS THE GATE</span><i>✦</i><span>DATA</span><i>✦</i><span>RECEIPT</span><i>✦</i></div>
+    <div class="mq-group"><span>REQUEST</span><i>✦</i><span>402</span><i>✦</i><span>PAY THE TOLL</span><i>✦</i><span>PASS THE GATE</span><i>✦</i><span>DATA</span><i>✦</i><span>RECEIPT</span><i>✦</i></div>
+  </div>
+</div>
+<div class="tape-row" aria-hidden="true">
+  <div class="mq-track" data-dir="rev">
+    <div class="mq-group"><span>STK·A <b class="up">182.40 ▲</b></span><span>STK·B <b class="dn">64.15 ▼</b></span><span>ETF·X <b class="up">411.80 ▲</b></span><span>STK·C <b class="up">27.92 ▲</b></span><span>ETF·Y <b class="dn">98.06 ▼</b></span><span class="smp">SAMPLE DATA</span></div>
+    <div class="mq-group"><span>STK·A <b class="up">182.40 ▲</b></span><span>STK·B <b class="dn">64.15 ▼</b></span><span>ETF·X <b class="up">411.80 ▲</b></span><span>STK·C <b class="up">27.92 ▲</b></span><span>ETF·Y <b class="dn">98.06 ▼</b></span><span class="smp">SAMPLE DATA</span></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<section class="stats paper" aria-label="At a glance">
+  <div class="wrap stats-grid" data-stagger>
+    <div class="stat"><strong data-odo="$0.001">$0.001</strong><span>from, per call · illustrative</span></div>
+    <div class="stat"><strong data-odo="30s">30s</strong><span>quote window before it expires</span></div>
+    <div class="stat"><strong data-odo="0">0</strong><span>API keys to store or leak</span></div>
+    <div class="stat"><strong data-odo="1">1</strong><span>header to prove payment</span></div>
+  </div>
+</section>
+
+<!-- WHY PER CALL -->
+<section class="section paper why" id="why" aria-labelledby="why-h">
+  <svg class="groove groove-top" aria-hidden="true"><use href="#groove"/></svg>
+  <div class="wrap">
+    <div class="eyebrow" data-slide="left">Why per call</div>
+    <h2 id="why-h" class="h2 hl"><span class="ln"><span>A meter, not</span></span><span class="ln"><span><em>a membership.</em></span></span></h2>
+    <div class="rows">
+      <div class="stmt" data-slide="left">
+        <h3>No keys to leak.</h3>
+        <p>Every request is paid for on its own. There is no long-lived secret sitting in your agent's config waiting to be copied.</p>
+        <div class="meta"><span class="chip sample">sample · no Authorization header</span></div>
+      </div>
+      <div class="stmt right" data-slide="right">
+        <h3>No plans to <em>outgrow.</em></h3>
+        <p>Ten calls or ten thousand, you pay for exactly what your agent used. Nothing to upgrade, nothing to cancel.</p>
+        <div class="meta"><span class="chip sample">sample · $0.001 per call</span></div>
+      </div>
+      <div class="stmt" data-slide="left">
+        <h3>No call you didn't pay for.</h3>
+        <p>Each response comes with an on-chain receipt, so your agent's spend can be checked line by line.</p>
+        <div class="meta"><span class="chip sample">sample · receipt 0x9f4e…c2a1</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIFECYCLE -->
+<section class="lifecycle label" id="how" aria-labelledby="how-h">
+  <div class="lc-wrap">
+    <div class="wrap" style="width:100%">
+      <div class="lc-head">
+        <div>
+          <div class="eyebrow">How it works · one call, four beats</div>
+          <h2 id="how-h" class="h2 hl"><span class="ln"><span>Request. 402. <em>Pay. Data.</em></span></span></h2>
+          <p class="lc-intro">Pay the toll. Pass the gate. Every call stops at the gate once, pays its own way, and goes through with a receipt.</p>
+        </div>
+      </div>
+      <div class="lc-stamp" aria-hidden="true"><span>402</span></div>
+      <div class="lc-steps" role="group" aria-label="Lifecycle steps">
+        <button class="lc-play" type="button" aria-pressed="false" aria-label="Play lifecycle">▶</button>
+        <button class="lc-step" type="button" data-i="0" aria-current="step">01 Request</button>
+        <button class="lc-step" type="button" data-i="1">02 402 Quote</button>
+        <button class="lc-step" type="button" data-i="2">03 Pay</button>
+        <button class="lc-step" type="button" data-i="3">04 Data + Receipt</button>
+      </div>
+      <div class="lc-bar" aria-hidden="true"><i></i></div>
+    </div>
+    <div class="lc-viewport">
+      <div class="lc-track" id="lcTrack" tabindex="0" aria-label="Lifecycle slides">
+        <article class="lc-slide" aria-label="Step 1 of 4">
+          <div class="lc-num" aria-hidden="true">01</div>
+          <div class="lc-copy">
+            <h3>Request</h3>
+            <p>Your agent calls an endpoint like any HTTP API. No key, no account, no signup.</p>
+            <svg class="lc-diag" viewBox="0 0 360 140" role="img" aria-label="Illustration: agent sends a request to the API">
+              <rect class="box" x="16" y="44" width="100" height="52" rx="10"/><text x="66" y="75" text-anchor="middle">AGENT</text>
+              <rect class="box" x="244" y="44" width="100" height="52" rx="10"/><text x="294" y="75" text-anchor="middle">API</text>
+              <line class="wire" x1="120" y1="70" x2="240" y2="70"/>
+              <circle class="pk" cx="112" cy="70" r="6"/>
+              <text x="180" y="40" text-anchor="middle">GET /v1/price</text>
+              <text x="180" y="124" text-anchor="middle" style="font-size:10px">illustrative</text>
+            </svg>
+          </div>
+        </article>
+        <article class="lc-slide" aria-label="Step 2 of 4">
+          <div class="lc-num" aria-hidden="true">02</div>
+          <div class="lc-copy">
+            <h3>402 Quote</h3>
+            <p>The API answers <span class="mono">402 Payment Required</span> with a price, an asset, a chain and an expiry.</p>
+            <svg class="lc-diag" viewBox="0 0 360 140" role="img" aria-label="Illustration: API replies with a 402 price quote">
+              <rect class="box" x="16" y="44" width="100" height="52" rx="10"/><text x="66" y="75" text-anchor="middle">AGENT</text>
+              <rect class="box" x="244" y="44" width="100" height="52" rx="10"/><text x="294" y="75" text-anchor="middle">API</text>
+              <line class="wire" x1="120" y1="70" x2="240" y2="70"/>
+              <circle class="pk back" cx="248" cy="70" r="6"/>
+              <g class="stamp"><circle cx="180" cy="34" r="20" fill="#e86a66"/><text x="180" y="39" text-anchor="middle" style="fill:#0b0a0a;font-weight:700">402</text></g>
+              <text x="180" y="124" text-anchor="middle" style="font-size:10px">price · asset · chainId · expiresIn</text>
+            </svg>
+          </div>
+        </article>
+        <article class="lc-slide" aria-label="Step 3 of 4">
+          <div class="lc-num" aria-hidden="true">03</div>
+          <div class="lc-copy">
+            <h3>Pay the toll</h3>
+            <p>The agent pays a few cents in stablecoin on Robinhood Chain (chain ID 4663, ETH for gas). The gate lifts.</p>
+            <svg class="lc-diag lc-gate" viewBox="0 0 360 140" role="img" aria-label="Illustration: a coin drops into the toll booth and the gate arm lifts">
+              <rect x="40" y="62" width="92" height="66" rx="10" fill="#0b0a0a" stroke="#f2a19c" stroke-width="1.5"/>
+              <rect x="62" y="60" width="48" height="5" rx="2.5" fill="#e86a66"/>
+              <g class="coin"><circle cx="86" cy="40" r="15" fill="#e86a66"/><circle cx="86" cy="40" r="7" fill="#0b0a0a"/></g>
+              <text x="86" y="104" text-anchor="middle">4663</text>
+              <rect x="170" y="70" width="14" height="58" rx="4" fill="#f3f0ec"/>
+              <rect x="160" y="122" width="34" height="8" rx="4" fill="#f3f0ec"/>
+              <g class="arm"><rect x="170" y="62" width="160" height="14" rx="7" fill="#f3f0ec"/><rect x="226" y="62" width="16" height="14" fill="#f2a19c"/><rect x="266" y="62" width="16" height="14" fill="#f2a19c"/></g>
+              <circle cx="177" cy="69" r="9" fill="#f3f0ec"/><circle cx="177" cy="69" r="3.5" fill="#e86a66"/>
+              <text x="300" y="120" text-anchor="middle" style="font-size:10px">illustrative</text>
+            </svg>
+          </div>
+        </article>
+        <article class="lc-slide" aria-label="Step 4 of 4">
+          <div class="lc-num" aria-hidden="true">04</div>
+          <div class="lc-copy">
+            <h3>Data + Receipt</h3>
+            <p>It retries with proof of payment and gets the data, plus an on-chain receipt for the books.</p>
+            <svg class="lc-diag" viewBox="0 0 360 140" role="img" aria-label="Illustration: data bars and a printed receipt">
+              <g fill="#f2a19c"><rect class="bar" x="30" y="70" width="18" height="50" rx="3"/><rect class="bar" x="56" y="50" width="18" height="70" rx="3" style="animation-delay:.1s"/><rect class="bar" x="82" y="84" width="18" height="36" rx="3" style="animation-delay:.2s"/><rect class="bar" x="108" y="40" width="18" height="80" rx="3" style="animation-delay:.3s"/></g>
+              <rect x="210" y="16" width="120" height="8" rx="4" fill="#000"/>
+              <g class="rcpt"><rect x="222" y="20" width="96" height="100" fill="#f3f0ec"/><g fill="#9a918c"><rect x="232" y="34" width="60" height="5"/><rect x="232" y="48" width="76" height="5"/><rect x="232" y="62" width="44" height="5"/></g><text x="270" y="104" text-anchor="middle" style="fill:#b3242b;font-size:9px">SAMPLE</text></g>
+            </svg>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRY IT -->
+<section class="section paper" id="try" aria-labelledby="try-h">
+  <svg class="groove groove-top" aria-hidden="true"><use href="#groove"/></svg>
+  <div class="wrap">
+    <div class="try-head">
+      <div>
+        <div class="eyebrow" data-slide="left">Try it · simulated</div>
+        <h2 id="try-h" class="h2 hl"><span class="ln"><span>Drop a coin.</span></span><span class="ln"><span><em>Watch it settle.</em></span></span></h2>
+        <p class="lead" data-slide="left">A simulated round trip through the toll gate. Nothing leaves your browser: no network calls, no wallet, nothing stored.</p>
+      </div>
+      <div class="slot-anchor" id="slotAnchor" aria-hidden="true">
+        <svg class="slot-fallback" id="slotFallback" viewBox="0 0 300 160">
+          <rect x="10" y="40" width="160" height="110" rx="16" fill="#0b0a0a"/><rect class="slit" x="45" y="32" width="90" height="12" rx="6" fill="#e86a66"/>
+          <text x="90" y="100" text-anchor="middle" fill="#f2a19c" style="font:600 13px 'JetBrains Mono',monospace;letter-spacing:.1em">INSERT COIN</text>
+          <circle class="lamp" cx="150" cy="58" r="6" fill="#e86a66"/>
+          <rect x="190" y="70" width="14" height="80" rx="4" fill="#0b0a0a"/>
+          <g class="fb-arm"><rect x="190" y="62" width="104" height="14" rx="7" fill="#141110"/><rect x="226" y="62" width="14" height="14" fill="#f2a19c"/><rect x="258" y="62" width="14" height="14" fill="#f2a19c"/></g>
+          <circle cx="197" cy="69" r="9" fill="#141110"/><circle cx="197" cy="69" r="3.5" fill="#e86a66"/>
+        </svg>
+        <span class="chip">3D toll gate · simulated</span>
+      </div>
+    </div>
+
+    <div class="machine">
+      <form class="panel" id="tryForm" data-slide="left" aria-label="Sample request builder">
+        <div class="plate"><span>TickGate · meter</span><span>chain 4663</span></div>
+        <div class="field">
+          <label for="ep">Endpoint</label>
+          <select class="select" id="ep">
+            <option value="/v1/price">/v1/price</option>
+            <option value="/v1/depth">/v1/depth</option>
+            <option value="/v1/history">/v1/history</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="sym">Symbol (sample)</label>
+          <select class="select" id="sym">
+            <option value="STK·A">STK·A</option>
+            <option value="STK·B">STK·B</option>
+            <option value="ETF·X">ETF·X</option>
+          </select>
+        </div>
+        <div class="price-read"><span>Illustrative price</span><strong id="priceRead">$0.001</strong></div>
+        <div class="machine-btns">
+          <button class="btn btn-crimson" type="submit" id="sendBtn">Send request</button>
+          <button class="btn btn-ink" type="button" id="coinBtn" disabled>Insert coin (simulated)</button>
+          <button class="btn btn-outline" type="button" id="resetBtn">Reset</button>
+        </div>
+        <p class="hint">Quotes expire after 30 seconds. Every value here is sample data. api.tickgate.live is not live yet · pre-launch.</p>
+      </form>
+
+      <div class="term" data-slide="right">
+        <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">agent@tickgate ~</span><span class="count-chip" id="countChip" hidden>quote expires in 30s</span><span class="badge">SIMULATED</span></div>
+        <div class="term-body" id="termOut" aria-live="polite" aria-label="Simulated terminal output">
+          <div class="ln term-empty">// pick an endpoint and a symbol, then Send request.</div>
+          <div class="ln term-empty">// the meter answers 402 first. that's the point.</div>
+          <div class="ln term-empty">// api.tickgate.live · API not live yet · pre-launch</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENDPOINT CRATE -->
+<section class="section paper" id="endpoints" aria-labelledby="ep-h">
+  <svg class="groove groove-top" aria-hidden="true"><use href="#groove"/></svg>
+  <div class="wrap">
+    <div class="crate-head">
+      <div>
+        <div class="eyebrow" data-slide="left">The endpoint crate</div>
+        <h2 id="ep-h" class="h2 hl"><span class="ln"><span>Dig through</span></span><span class="ln"><span><em>the crate.</em></span></span></h2>
+        <p class="lead" data-slide="left">Planned endpoints. Prices per call are illustrative and may change before launch.</p>
+      </div>
+      <div class="tabs" role="group" aria-label="Filter endpoints" data-slide="right">
+        <button class="tab" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="tab" type="button" data-filter="price" aria-pressed="false">Price</button>
+        <button class="tab" type="button" data-filter="depth" aria-pressed="false">Depth</button>
+        <button class="tab" type="button" data-filter="history" aria-pressed="false">History</button>
+      </div>
+    </div>
+    <div class="crate" id="crate"></div>
+    <div class="more-row" data-slide="up"><a class="btn btn-outline" href="endpoints.html">Full endpoint reference <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- RECEIPTS -->
+<section class="section label glow-zone" id="receipts" aria-labelledby="rc-h">
+  <div class="wrap">
+    <div class="eyebrow" data-slide="left">Receipts · sample dashboard</div>
+    <h2 id="rc-h" class="h2 hl"><span class="ln"><span>Every coin</span></span><span class="ln"><span><em>prints a receipt.</em></span></span></h2>
+    <p class="lead" data-slide="left">What an agent's usage could look like. Figures, chart and receipts below are sample data.</p>
+    <div class="rcpt-grid">
+      <div class="dash" data-slide="left">
+        <div class="dash-top"><h3>Calls per hour</h3><span class="chip sample">sample · last 24h</span></div>
+        <svg class="chart" id="chart" viewBox="0 0 600 230" role="img" aria-label="Sample area chart of calls per hour over 24 hours">
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e86a66" stop-opacity=".75"/><stop offset="1" stop-color="#b3242b" stop-opacity=".05"/></linearGradient>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b3242b"/><stop offset="1" stop-color="#f2a19c"/></linearGradient>
+            <clipPath id="chartClip"><rect id="chartClipRect" x="0" y="0" width="600" height="230"/></clipPath>
+          </defs>
+          <g class="grid"></g>
+          <g clip-path="url(#chartClip)"><path id="chartArea" fill="url(#areaGrad)"/></g>
+          <path id="chartLine" class="ln" style="stroke:url(#lineGrad)"/>
+          <g class="xl"></g>
+        </svg>
+        <div class="figs">
+          <div class="fig"><span>Calls · 24h (sample)</span><strong data-count="1284">1,284</strong></div>
+          <div class="fig"><span>Spent (sample)</span><strong data-count="2.71" data-dec="2" data-prefix="$">$2.71</strong></div>
+          <div class="fig"><span>Avg per call (sample)</span><strong data-count="0.0021" data-dec="4" data-prefix="$">$0.0021</strong></div>
+        </div>
+      </div>
+      <div class="printer" data-slide="right">
+        <div class="printer-head"><span>receipt printer</span><span class="led" aria-hidden="true"></span></div>
+        <div class="slot-mouth" aria-hidden="true"></div>
+        <div class="rc-out"><div class="rc-list" id="rcList" aria-label="Sample receipts"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR AGENTS -->
+<section class="section paper" id="agents" aria-labelledby="ag-h">
+  <svg class="groove groove-top" aria-hidden="true"><use href="#groove"/></svg>
+  <div class="wrap">
+    <div class="eyebrow" data-slide="left">For agents</div>
+    <h2 id="ag-h" class="h2 hl"><span class="ln"><span>Five lines between</span></span><span class="ln"><span>your agent and <em>the tape.</em></span></span></h2>
+    <div class="agents-grid">
+      <div class="code-card" data-slide="left">
+        <div class="code-bar">
+          <div role="tablist" aria-label="Code language" style="display:flex;gap:4px">
+            <button class="code-tab" role="tab" id="tab-js" aria-selected="true" aria-controls="code-js-p" type="button">JavaScript</button>
+            <button class="code-tab" role="tab" id="tab-py" aria-selected="false" aria-controls="code-py-p" type="button" tabindex="-1">Python</button>
+          </div>
+          <span class="note">pseudo-code · SDK at launch · API not live yet</span>
+          <button class="copy-btn" type="button" id="copyCode">Copy</button>
+        </div>
+        <pre id="code-js-p" role="tabpanel" aria-labelledby="tab-js" tabindex="0"><code></code></pre>
+        <pre id="code-py-p" role="tabpanel" aria-labelledby="tab-py" tabindex="0" hidden><code></code></pre>
+      </div>
+      <div class="feat">
+        <div class="tilt-card" data-tilt data-slide="right"><div class="k">01 · caps</div><h3>Spending caps per agent</h3><p>Give each agent a daily budget. Past the cap, it stops paying and stops calling.</p></div>
+        <div class="tilt-card" data-tilt data-slide="right"><div class="k">02 · allowlist</div><h3>Endpoint allowlist</h3><p>Pin agents to the endpoints they need, like <code>/v1/price</code> only.</p></div>
+        <div class="tilt-card" data-tilt data-slide="right"><div class="k">03 · audit</div><h3>Receipts to audit</h3><p>Every paid call maps to an on-chain receipt you can reconcile.</p></div>
+        <a class="btn btn-outline" href="docs.html" data-slide="right">Read the docs <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLORE -->
+<section class="section paper explore" aria-labelledby="ex-h">
+  <svg class="groove groove-top" aria-hidden="true"><use href="#groove"/></svg>
+  <div class="wrap">
+    <div class="eyebrow" data-slide="left">Walk the booth</div>
+    <h2 id="ex-h" class="h2 hl"><span class="ln"><span>Everything past</span></span><span class="ln"><span><em>the gate.</em></span></span></h2>
+    <div class="ex-grid" data-stagger>
+      <a class="ex-card" href="protocol.html"><span class="ex-k">Protocol</span><strong>Six steps. One request.</strong><span>The full 402 flow, the four layers and the agent rules.</span><i aria-hidden="true">→</i></a>
+      <a class="ex-card" href="docs.html"><span class="ex-k">Docs</span><strong>Quickstart to receipts.</strong><span>Quote objects, payment headers, errors and pseudo-code.</span><i aria-hidden="true">→</i></a>
+      <a class="ex-card" href="endpoints.html"><span class="ex-k">Endpoints</span><strong>Nine planned routes.</strong><span>Parameters, sample responses and illustrative prices.</span><i aria-hidden="true">→</i></a>
+      <a class="ex-card" href="token.html"><span class="ex-k">$TGATE</span><strong>The coin on the meter.</strong><span>What it is, what it isn't, and the risks. Read first.</span><i aria-hidden="true">→</i></a>
+      <a class="ex-card" href="roadmap.html"><span class="ex-k">Roadmap</span><strong>From preview to mainnet.</strong><span>What ships in each phase, and what's already done.</span><i aria-hidden="true">→</i></a>
+      <a class="ex-card dark" href="early-access.html"><span class="ex-k">Early access</span><strong>Bring an agent.</strong><span>Apply to be among the first builders through the gate.</span><i aria-hidden="true">→</i></a>
+    </div>
+  </div>
+</section>
+
+<!-- TOKEN -->
+<section class="section label glow-zone" id="token" aria-labelledby="tk-h">
+  <div class="wrap token-grid">
+    <div>
+      <div class="eyebrow" data-slide="left">The meter has a coin</div>
+      <h2 id="tk-h" class="h2 hl"><span class="ln"><span>Meet <em>$TGATE</em></span></span></h2>
+      <p class="lead" data-slide="left">Community token for the TickGate project. Not required to use the API. Nothing here is financial advice or a promise of value.</p>
+      <div class="ca-row" data-slide="left">
+        <span class="ca-pill"><span class="v" id="caText">CA: announced at launch</span><button class="copy-btn" type="button" id="caCopy" disabled title="Available at launch">Copy</button></span>
+      </div>
+      <div class="socials" id="socials" data-slide="left">
+        <a class="btn btn-outline btn-sm" id="xLink" href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>@ticketgaterh</a>
+        <a class="btn btn-outline btn-sm" id="tgLink" href="#" target="_blank" rel="noopener noreferrer">Telegram</a>
+        <a class="btn btn-outline btn-sm" href="token.html">Token details <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <p class="disclaim" data-slide="left">No price, market cap, supply or chart is shown here on purpose. Details will be published at launch.</p>
+    </div>
+    <div class="token-stage" id="tokenStage">
+      <canvas id="tokenGL" aria-hidden="true"></canvas>
+      <svg class="token-fallback" viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg>
+      <span class="sr-only">A spinning marbled red vinyl TickGate token with a gate mark on its label.</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section paper" id="faq" aria-labelledby="faq-h">
+  <svg class="groove groove-top" aria-hidden="true"><use href="#groove"/></svg>
+  <div class="wrap">
+    <div class="eyebrow" data-slide="left">FAQ</div>
+    <h2 id="faq-h" class="h2 hl"><span class="ln"><span>Questions at</span></span><span class="ln"><span><em>the counter.</em></span></span></h2>
+    <div class="faq-list">
+      <details class="acc" data-slide="left"><summary>What is HTTP 402?<span class="pm" aria-hidden="true"></span></summary><div class="faq-a">402 Payment Required is a status code that has been in the HTTP spec since the 1990s, reserved for payments. TickGate uses it as intended: the server replies 402 with a price quote, the client pays, then retries with proof of payment.</div></details>
+      <details class="acc" data-slide="right"><summary>Which chain?<span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Robinhood Chain, an Arbitrum Orbit L2 (chain ID 4663). Gas is paid in ETH; calls are priced in a USD stablecoin.</div></details>
+      <details class="acc" data-slide="left"><summary>Do I need an API key?<span class="pm" aria-hidden="true"></span></summary><div class="faq-a">No. Payment is the authorization. No keys, no accounts, no monthly plans.</div></details>
+      <details class="acc" data-slide="right"><summary>Is it live?<span class="pm" aria-hidden="true"></span></summary><div class="faq-a">Not yet. This is a pre-launch preview; all data shown is sample data and api.tickgate.live is not live yet.</div></details>
+      <details class="acc" data-slide="left"><summary>Is this affiliated with Robinhood?<span class="pm" aria-hidden="true"></span></summary><div class="faq-a">No. TickGate is an independent project built for Robinhood Chain.</div></details>
+    </div>
+    <div class="more-row" data-slide="up"><a class="btn btn-outline" href="faq.html">All questions <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section label cta glow-zone" id="waitlist" aria-labelledby="cta-h">
+  <div class="wrap">
+    <div class="eyebrow" data-slide="left">Waitlist</div>
+    <h2 id="cta-h" class="hl"><span class="ln"><span>Your agent has a</span></span><span class="ln"><span><em>pocket full of coins.</em></span></span></h2>
+    <form class="wl" id="wlForm" novalidate data-slide="left" data-demo-form="wlMsg" data-ok-text="You're on the list (demo). Nothing was sent or stored.">
+      <label for="wlEmail" class="sr-only">Email address</label>
+      <input id="wlEmail" type="email" name="email" placeholder="you@agentlab.dev" autocomplete="email" required>
+      <button class="btn btn-crimson btn-slot" type="submit"><span class="slot-line" aria-hidden="true"></span>Join waitlist</button>
+      <svg class="wl-gate" viewBox="0 0 150 80" aria-hidden="true">
+        <rect x="14" y="34" width="10" height="44" rx="3" fill="#f3f0ec"/>
+        <g class="wl-arm"><rect x="14" y="28" width="130" height="12" rx="6" fill="#f3f0ec"/><rect x="50" y="28" width="12" height="12" fill="#e86a66"/><rect x="82" y="28" width="12" height="12" fill="#e86a66"/><rect x="114" y="28" width="12" height="12" fill="#e86a66"/></g>
+        <circle cx="19" cy="34" r="8" fill="#f3f0ec"/><circle cx="19" cy="34" r="3" fill="#e86a66"/>
+      </svg>
+    </form>
+    <p class="wl-msg" id="wlMsg" role="status" aria-live="polite"></p>
+  </div>
+</section>
+</main>
+
+<footer class="site-foot label" aria-label="Site footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="index.html"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+        <p class="blurb">Pay-per-call market data for AI agents on Robinhood Chain. Pay the toll. Pass the gate. Pre-launch preview.</p>
+        <a class="foot-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>@ticketgaterh</a>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="protocol.html">Protocol</a></li><li><a href="endpoints.html">Endpoints</a></li><li><a href="docs.html">Docs</a></li><li><a href="index.html#try">Try it</a></li></ul></div>
+      <div><h4>Project</h4><ul><li><a href="token.html">$TGATE</a></li><li><a href="roadmap.html">Roadmap</a></li><li><a href="faq.html">FAQ</a></li><li><a href="early-access.html">Early access</a></li><li><a href="brand/export.html">Brand kit</a></li></ul></div>
+      <div><h4>Status</h4><ul><li><span class="dot-live" aria-hidden="true"></span>Pre-launch</li><li>API not live yet</li><li>Chain ID 4663</li><li>Sample data only</li><li><a href="https://tickgate.live/">tickgate.live</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <span>Sample data only. Not financial advice. Not affiliated with Robinhood Markets, Inc. Stock tokens may be restricted in your jurisdiction.</span>
+      <span>© <span data-year>2026</span> TickGate · tickgate.live</span>
+    </div>
+  </div>
+</footer>
+
+
+<script type="text/plain" id="src-js">// pseudo-code · SDK at launch · api.tickgate.live: API not live yet · pre-launch
+async function getPrice(symbol) {
+  const url = `https://api.tickgate.live/v1/price?symbol=${symbol}`;
+  let res = await fetch(url);                       // 1. call
+
+  if (res.status === 402) {                         // 2. catch 402
+    const quote = await res.json();                 // { price, asset, chainId: 4663, payTo, expiresIn }
+    if (!budget.allows(quote)) throw new Error("spend cap reached");
+    const proof = await wallet.pay(quote);          // 3. pay the toll (stablecoin)
+    res = await fetch(url, {                        // 4. retry with proof header
+      headers: { "X-Payment": proof }
+    });
+  }
+
+  const data = await res.json();
+  receipts.log(data.receipt);                       // 5. log the on-chain receipt
+  return data;
+}</script>
+<script type="text/plain" id="src-py"># pseudo-code · SDK at launch · api.tickgate.live: API not live yet · pre-launch
+def get_price(symbol):
+    url = f"https://api.tickgate.live/v1/price?symbol={symbol}"
+    res = http.get(url)                             # 1. call
+
+    if res.status == 402:                           # 2. catch 402
+        quote = res.json()                          # price, asset, chainId 4663, payTo, expiresIn
+        if not budget.allows(quote):
+            raise SpendCapReached()
+        proof = wallet.pay(quote)                   # 3. pay the toll (stablecoin)
+        res = http.get(url, headers={"X-Payment": proof})  # 4. retry with proof
+
+    data = res.json()
+    receipts.log(data["receipt"])                   # 5. log the on-chain receipt
+    return data</script>
+
+<script type="module" src="assets/home.js"></script>
+</body>
+</html>

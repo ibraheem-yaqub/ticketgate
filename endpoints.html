@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en" data-page="endpoints">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Endpoints · TickGate · Robinhood Chain market data, paid per call</title>
+<meta name="description" content="Robinhood Chain stock-token endpoints for price, depth and history, with parameters, sample responses and illustrative per-call prices. Pre-launch.">
+<link rel="canonical" href="https://tickgate.live/endpoints.html">
+<meta name="theme-color" content="#f3f0ec">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TickGate">
+<meta property="og:url" content="https://tickgate.live/endpoints.html">
+<meta property="og:title" content="Endpoints · TickGate · Robinhood Chain market data, paid per call">
+<meta property="og:description" content="Robinhood Chain stock-token endpoints for price, depth and history, with parameters, sample responses and illustrative per-call prices. Pre-launch.">
+<meta property="og:image" content="https://tickgate.live/brand/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TickGate: Insert coin. Get data.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ticketgaterh">
+<meta name="twitter:title" content="Endpoints · TickGate · Robinhood Chain market data, paid per call">
+<meta name="twitter:description" content="Robinhood Chain stock-token endpoints for price, depth and history, with parameters, sample responses and illustrative per-call prices. Pre-launch.">
+<meta name="twitter:image" content="https://tickgate.live/brand/og-image.png">
+<link rel="icon" href="brand/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.23/dist/lenis.mjs"
+  }
+}
+</script>
+<link rel="modulepreload" href="assets/core.js">
+<script>/* early flags: page-transition entry + once-per-session home intro (CSS reveals everything after 2.6s if scripts never run) */
+(function(){var d=document.documentElement,rm=matchMedia('(prefers-reduced-motion: reduce)').matches,ss;try{ss=sessionStorage}catch(e){}
+d.classList.add('js');if(rm)return;
+try{if(ss&&ss.getItem('tg-wipe')){ss.removeItem('tg-wipe');d.classList.add('tg-enter')}}catch(e){}
+try{if(d.dataset.page==='home'&&ss&&!ss.getItem('tg-intro')&&!location.hash){d.classList.add('intro')}}catch(e){}})();</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+</head>
+<body class="page-endpoints">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- SVG sprite: brand icon (gate mark) + marble filters (not display:none so filters resolve) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="tgG" gradientUnits="userSpaceOnUse" cx="164" cy="143" r="400">
+      <stop offset="0" stop-color="#f8c9c4"/><stop offset=".18" stop-color="#f2a19c"/>
+      <stop offset=".45" stop-color="#e86a66"/><stop offset=".75" stop-color="#c43a3a"/>
+      <stop offset="1" stop-color="#8f1d22"/>
+    </radialGradient>
+    <filter id="tgM" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 0 .25 1 .2 0 0 .45 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .85 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="SourceAlpha" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <clipPath id="tgC"><circle cx="256" cy="256" r="240"/></clipPath>
+    <radialGradient id="tgH" cx="30%" cy="26%" r="34%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <!-- page marble: sheen on buttons/cards -->
+    <filter id="mf" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="34" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feComponentTransfer in="n" result="b"><feFuncR type="table" tableValues="0 0 0 0 0 0 0 0 .3 1 .2 0 .5 0 0 0 0 0 0 0 0"/></feComponentTransfer>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  .7 0 0 0 0" result="v"/>
+      <feComposite in="v" in2="w" operator="in" result="vi"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="vi"/></feMerge>
+    </filter>
+    <!-- divider marble: gentle warp on hairlines -->
+    <filter id="mfd" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .70  0 0 0 0 .14  0 0 0 0 .17  1.4 0 0 0 -.55" result="tint"/>
+      <feComposite in="tint" in2="w" operator="in" result="ti"/>
+      <feMerge><feMergeNode in="w"/><feMergeNode in="ti"/></feMerge>
+    </filter>
+    <linearGradient id="fbRib" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#c43a3a"/><stop offset=".35" stop-color="#e86a66"/><stop offset=".55" stop-color="#f2a19c"/><stop offset=".8" stop-color="#e86a66"/><stop offset="1" stop-color="#b3242b"/>
+    </linearGradient>
+  </defs>
+  <symbol id="tg-gate" viewBox="0 0 512 512">
+    <rect x="186" y="256" width="40" height="80" rx="12" fill="#f3f0ec"/>
+    <rect x="172" y="322" width="68" height="22" rx="11" fill="#f3f0ec"/>
+    <g transform="rotate(-35 206 258)">
+      <rect x="186" y="238" width="168" height="40" rx="20" fill="#f3f0ec"/>
+      <rect x="252" y="238" width="22" height="40" fill="#f2a19c"/>
+      <rect x="292" y="238" width="22" height="40" fill="#f2a19c"/>
+    </g>
+    <circle cx="206" cy="258" r="25" fill="#f3f0ec"/>
+    <circle cx="206" cy="258" r="9" fill="#e86a66"/>
+  </symbol>
+  <symbol id="tg-icon" viewBox="0 0 512 512">
+    <circle cx="256" cy="256" r="250" fill="#6e1418"/>
+    <g clip-path="url(#tgC)">
+      <rect x="-80" y="-80" width="672" height="672" fill="url(#tgG)" filter="url(#tgM)"/>
+      <circle cx="256" cy="256" r="240" fill="url(#tgH)"/>
+      <g fill="none" stroke="#6e1418" stroke-opacity=".28" stroke-width="3">
+        <circle cx="256" cy="256" r="220"/><circle cx="256" cy="256" r="196"/><circle cx="256" cy="256" r="172"/><circle cx="256" cy="256" r="148"/>
+      </g>
+    </g>
+    <path d="M78 214 A182 182 0 0 1 214 78" fill="none" stroke="#fff" stroke-opacity=".78" stroke-width="24" stroke-linecap="round"/>
+    <path d="M112 176 A150 150 0 0 1 150 122" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="256" cy="256" r="124" fill="#0b0a0a"/>
+    <circle cx="256" cy="256" r="116" fill="none" stroke="#161313" stroke-width="4"/>
+    <use href="#tg-gate"/>
+  </symbol>
+  <symbol id="groove" viewBox="0 0 1200 64">
+    <path d="M60 62 A540 56 0 0 1 1140 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M160 62 A440 46 0 0 1 1040 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path class="hot" d="M260 62 A340 36 0 0 1 940 62" fill="none" stroke="#b3242b" stroke-width="1.6" stroke-opacity=".7"/>
+    <path d="M360 62 A240 26 0 0 1 840 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+    <path d="M460 62 A140 16 0 0 1 740 62" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".22"/>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3Zm-1.08 16.18h1.7L7.42 4.73H5.6l11.07 14.45Z"/></symbol>
+</svg>
+
+<!-- NAV -->
+<header class="site-nav" id="nav">
+  <div class="progress-tape" aria-hidden="true"><i></i><b class="tape-coin"><svg viewBox="0 0 512 512"><use href="#tg-icon"/></svg></b></div>
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html" aria-label="TickGate home"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+    <ul class="nav-links">
+      <li><a href="protocol.html">Protocol</a></li>
+      <li><a href="endpoints.html">Endpoints</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="token.html">$TGATE</a></li>
+      <li><a href="roadmap.html">Roadmap</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+    <a class="nav-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer" aria-label="TickGate on X"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg></a>
+    <a class="btn btn-ink btn-sm nav-cta" href="early-access.html">Early access</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><span></span></button>
+  </div>
+  <nav class="mobile-menu label" id="mobile-menu" hidden aria-label="Mobile">
+    <a href="index.html">Home</a><a href="protocol.html">Protocol</a><a href="endpoints.html">Endpoints</a><a href="docs.html">Docs</a><a href="token.html">$TGATE</a><a href="roadmap.html">Roadmap</a><a href="faq.html">FAQ</a>
+    <a data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer">Follow on X ↗</a>
+    <a class="btn btn-crimson" href="early-access.html">Early access</a>
+  </nav>
+</header>
+
+<main id="main">
+<section class="page-hero paper" aria-labelledby="ph-h">
+  <div class="wrap ph-grid">
+    <div>
+      <div class="crumbs ph-in"><a href="index.html">TickGate</a> / Endpoints</div>
+      <div class="eyebrow">The endpoint crate</div>
+      <h1 id="ph-h" class="hl"><span class="ln"><span>Nine routes.</span></span><span class="ln"><span><em>One meter.</em></span></span></h1>
+      <p class="lead ph-in">Price, depth and history for stock tokens on Robinhood Chain. Every route works the same way: ask, get a 402 quote, pay, get data. Prices are illustrative and may change before launch.</p>
+      <div class="ph-chips ph-in"><span class="chip chip-rh"><i aria-hidden="true"></i>Robinhood Chain</span><span class="chip sample">Planned endpoints</span><span class="chip">api.tickgate.live · API not live yet · pre-launch</span></div>
+    </div>
+    <div class="ph-art" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <g class="sleeves">
+          <rect class="sl sl1" x="120" y="70" width="210" height="210" rx="12" fill="#ebe6e0" stroke="rgba(20,17,16,.2)" transform="rotate(10 225 175)"/>
+          <rect class="sl sl2" x="95" y="95" width="210" height="210" rx="12" fill="#f3f0ec" stroke="rgba(20,17,16,.2)" transform="rotate(-6 200 200)"/>
+        </g>
+        <g class="disc-peek"><use href="#tg-icon" x="110" y="40" width="190" height="190" class="spin-slow"/></g>
+        <rect x="64" y="130" width="272" height="220" rx="12" fill="#0b0a0a"/>
+        <text x="88" y="180" fill="#f2a19c" style="font:600 22px 'JetBrains Mono',monospace">GET</text>
+        <text x="88" y="214" fill="#f3f0ec" style="font:600 22px 'JetBrains Mono',monospace">/v1/price</text>
+        <text x="88" y="310" fill="#9a918c" style="font:500 12.5px 'JetBrains Mono',monospace">$0.001 / call · illustrative</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="band paper" aria-labelledby="list-h">
+  <div class="wrap">
+    <div class="band-head">
+      <div>
+        <div class="eyebrow">Reference</div>
+        <h2 id="list-h" class="h2">All endpoints</h2>
+      </div>
+      <div class="ep-tools">
+        <div class="tabs" role="group" aria-label="Filter endpoints">
+          <button class="tab" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="tab" type="button" data-filter="price" aria-pressed="false">Price</button>
+          <button class="tab" type="button" data-filter="depth" aria-pressed="false">Depth</button>
+          <button class="tab" type="button" data-filter="history" aria-pressed="false">History</button>
+        </div>
+        <label class="sr-only" for="epSearch">Search endpoints</label>
+        <input class="search" id="epSearch" type="search" placeholder="Search routes" autocomplete="off">
+      </div>
+    </div>
+    <div class="ep-list" id="epList" data-stagger>
+<details class="ep" data-cat="price" data-q="/v1/price last, bid, ask and timestamp for one stock token. price">
+  <summary><span class="method">GET</span><span><span class="p">/v1/price</span><span class="d">Last, bid, ask and timestamp for one stock token.</span></span><span class="pr">$0.001<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol, e.g. STK·A (sample)</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.001. Category: price. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;STK·A&quot;,
+  &quot;last&quot;: &quot;182.40&quot;,
+  &quot;bid&quot;: &quot;182.33&quot;,
+  &quot;ask&quot;: &quot;182.47&quot;,
+  &quot;time&quot;: &quot;2026-11-25T18:00:00Z&quot;,
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="price" data-q="/v1/price/batch up to 20 symbols, one payment. price">
+  <summary><span class="method">GET</span><span><span class="p">/v1/price/batch</span><span class="d">Up to 20 symbols, one payment.</span></span><span class="pr">$0.001<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbols</code></td><td>string</td><td>yes</td><td>Comma-separated, max 20</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.001. Category: price. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;prices&quot;: [
+    {
+      &quot;symbol&quot;: &quot;STK·A&quot;,
+      &quot;last&quot;: &quot;182.40&quot;
+    },
+    {
+      &quot;symbol&quot;: &quot;STK·B&quot;,
+      &quot;last&quot;: &quot;64.15&quot;
+    }
+  ],
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="price" data-q="/v1/price/spread bid/ask spread and mid price. price">
+  <summary><span class="method">GET</span><span><span class="p">/v1/price/spread</span><span class="d">Bid/ask spread and mid price.</span></span><span class="pr">$0.001<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.001. Category: price. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;ETF·X&quot;,
+  &quot;bid&quot;: &quot;411.64&quot;,
+  &quot;ask&quot;: &quot;411.96&quot;,
+  &quot;mid&quot;: &quot;411.80&quot;,
+  &quot;spreadBps&quot;: 7.8,
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="depth" data-q="/v1/depth top 5×5 order book levels. depth">
+  <summary><span class="method">GET</span><span><span class="p">/v1/depth</span><span class="d">Top 5×5 order book levels.</span></span><span class="pr">$0.003<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.003. Category: depth. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;STK·A&quot;,
+  &quot;bids&quot;: [
+    [
+      &quot;182.38&quot;,
+      410
+    ],
+    [
+      &quot;182.35&quot;,
+      655
+    ]
+  ],
+  &quot;asks&quot;: [
+    [
+      &quot;182.42&quot;,
+      380
+    ],
+    [
+      &quot;182.45&quot;,
+      720
+    ]
+  ],
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="depth" data-q="/v1/depth/full up to 50 levels per side. depth">
+  <summary><span class="method">GET</span><span><span class="p">/v1/depth/full</span><span class="d">Up to 50 levels per side.</span></span><span class="pr">$0.003<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol</td></tr><tr><td><code>levels</code></td><td>int</td><td>no</td><td>1–50, default 20</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.003. Category: depth. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;STK·B&quot;,
+  &quot;levels&quot;: 20,
+  &quot;bids&quot;: [
+    &quot;…&quot;
+  ],
+  &quot;asks&quot;: [
+    &quot;…&quot;
+  ],
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="depth" data-q="/v1/depth/imbalance bid/ask volume ratio at the top of book. depth">
+  <summary><span class="method">GET</span><span><span class="p">/v1/depth/imbalance</span><span class="d">Bid/ask volume ratio at the top of book.</span></span><span class="pr">$0.003<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol</td></tr><tr><td><code>levels</code></td><td>int</td><td>no</td><td>1–10, default 5</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.003. Category: depth. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;STK·A&quot;,
+  &quot;bidVol&quot;: 2840,
+  &quot;askVol&quot;: 2310,
+  &quot;ratio&quot;: 1.23,
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="history" data-q="/v1/history ohlc candles from 1m to 1d. history">
+  <summary><span class="method">GET</span><span><span class="p">/v1/history</span><span class="d">OHLC candles from 1m to 1d.</span></span><span class="pr">$0.01<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol</td></tr><tr><td><code>interval</code></td><td>enum</td><td>no</td><td>1m · 5m · 1h · 1d</td></tr><tr><td><code>limit</code></td><td>int</td><td>no</td><td>1–500, default 100</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.01. Category: history. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;STK·A&quot;,
+  &quot;interval&quot;: &quot;1m&quot;,
+  &quot;candles&quot;: [
+    [
+      &quot;18:00&quot;,
+      &quot;182.10&quot;,
+      &quot;182.52&quot;,
+      &quot;181.98&quot;,
+      &quot;182.40&quot;
+    ]
+  ],
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="history" data-q="/v1/history/trades recent fills with size and side. history">
+  <summary><span class="method">GET</span><span><span class="p">/v1/history/trades</span><span class="d">Recent fills with size and side.</span></span><span class="pr">$0.01<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol</td></tr><tr><td><code>limit</code></td><td>int</td><td>no</td><td>1–200, default 50</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.01. Category: history. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;STK·B&quot;,
+  &quot;trades&quot;: [
+    {
+      &quot;price&quot;: &quot;64.15&quot;,
+      &quot;size&quot;: 12,
+      &quot;side&quot;: &quot;buy&quot;,
+      &quot;time&quot;: &quot;18:00:04&quot;
+    }
+  ],
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+<details class="ep" data-cat="history" data-q="/v1/history/vwap volume-weighted average over a window. history">
+  <summary><span class="method">GET</span><span><span class="p">/v1/history/vwap</span><span class="d">Volume-weighted average over a window.</span></span><span class="pr">$0.01<span class="sr-only"> per call, illustrative</span></span><span class="chev" aria-hidden="true">▾</span></summary>
+  <div class="ep-body">
+    <div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Param</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead><tbody><tr><td><code>symbol</code></td><td>string</td><td>yes</td><td>Stock token symbol</td></tr><tr><td><code>window</code></td><td>enum</td><td>no</td><td>15m · 1h · 1d</td></tr></tbody></table></div>
+      <p class="hint">First call answers <code>402</code> with a quote for $0.01. Category: history. Status: <span class="pill">planned</span></p></div>
+    <div><pre aria-label="Sample 200 response">{
+  &quot;symbol&quot;: &quot;ETF·X&quot;,
+  &quot;window&quot;: &quot;1h&quot;,
+  &quot;vwap&quot;: &quot;411.52&quot;,
+  &quot;volume&quot;: 18240,
+  &quot;sample&quot;: true
+}</pre></div>
+  </div>
+</details>
+    </div>
+    <p class="empty" id="epEmpty" hidden>No routes match. Try “depth” or “vwap”.</p>
+  </div>
+</section>
+
+<section class="band label glow-zone" aria-labelledby="pr-h">
+  <div class="wrap">
+    <div class="band-head">
+      <div>
+        <div class="eyebrow" data-slide="left">Pricing</div>
+        <h2 id="pr-h" class="h2 hl"><span class="ln"><span>Three tiers of toll.</span></span><span class="ln"><span><em>No plans.</em></span></span></h2>
+      </div>
+      <p class="lead" data-slide="right">Illustrative per-call prices by route family. Final prices are set at launch and always shown in the 402 quote before your agent pays.</p>
+    </div>
+    <div class="grid-3" data-stagger>
+      <div class="card" data-tilt><span class="k">Price</span><span class="big">$0.001</span><p>Last, bid, ask, spread. Batch up to 20 symbols for one toll.</p></div>
+      <div class="card" data-tilt><span class="k">Depth</span><span class="big">$0.003</span><p>Order book levels and top-of-book imbalance.</p></div>
+      <div class="card" data-tilt><span class="k">History</span><span class="big">$0.01</span><p>Candles, recent fills and VWAP over a window.</p></div>
+    </div>
+    <div class="note" style="margin-top:22px"><b>Note</b><span>All prices on this page are illustrative and may change before launch. Symbols such as STK·A are sample placeholders, not real listings.</span></div>
+  </div>
+</section>
+
+<section class="band paper" aria-labelledby="conv-h">
+  <svg class="groove groove-top" aria-hidden="true"><use href="#groove"/></svg>
+  <div class="wrap">
+    <div class="eyebrow" data-slide="left">Conventions</div>
+    <h2 id="conv-h" class="h2 hl"><span class="ln"><span>Same gate,</span></span><span class="ln"><span><em>every route.</em></span></span></h2>
+    <div class="grid-3" style="margin-top:40px" data-stagger>
+      <div class="card"><span class="k">Base URL</span><h3>api.tickgate.live</h3><p>HTTPS only, JSON responses. Not live yet: pre-launch.</p></div>
+      <div class="card"><span class="k">Auth</span><h3>Payment is the key</h3><p>No API keys. A paid quote plus the <code>X-Payment</code> header unlocks one response.</p></div>
+      <div class="card"><span class="k">Numbers</span><h3>Prices as strings</h3><p>Decimal strings avoid float rounding. Sizes are integers.</p></div>
+    </div>
+    <div class="more-row" data-slide="up"><a class="btn btn-crimson" href="docs.html#endpoints">Endpoint docs <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+</main>
+
+<footer class="site-foot label" aria-label="Site footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="index.html"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#tg-icon"/></svg><span>Tick<b>Gate</b></span></a>
+        <p class="blurb">Pay-per-call market data for AI agents on Robinhood Chain. Pay the toll. Pass the gate. Pre-launch preview.</p>
+        <a class="foot-x" data-x-link href="https://x.com/ticketgaterh" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>@ticketgaterh</a>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="protocol.html">Protocol</a></li><li><a href="endpoints.html">Endpoints</a></li><li><a href="docs.html">Docs</a></li><li><a href="index.html#try">Try it</a></li></ul></div>
+      <div><h4>Project</h4><ul><li><a href="token.html">$TGATE</a></li><li><a href="roadmap.html">Roadmap</a></li><li><a href="faq.html">FAQ</a></li><li><a href="early-access.html">Early access</a></li><li><a href="brand/export.html">Brand kit</a></li></ul></div>
+      <div><h4>Status</h4><ul><li><span class="dot-live" aria-hidden="true"></span>Pre-launch</li><li>API not live yet</li><li>Chain ID 4663</li><li>Sample data only</li><li><a href="https://tickgate.live/">tickgate.live</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <span>Sample data only. Not financial advice. Not affiliated with Robinhood Markets, Inc. Stock tokens may be restricted in your jurisdiction.</span>
+      <span>© <span data-year>2026</span> TickGate · tickgate.live</span>
+    </div>
+  </div>
+</footer>
+
+
+<script type="module" src="assets/pages.js"></script>
+</body>
+</html>
